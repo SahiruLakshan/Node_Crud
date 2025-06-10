@@ -1,9 +1,15 @@
 import Product from "../models/Product.js";
 
-// Create a new product
+// Create a new product logic
 export const createProduct = async (req, res) => {
     try {
         const { name, price, quantity } = req.body;
+
+        const existingProduct = await Product.findOne({ name: name.trim() });
+        
+        if (existingProduct) {
+            return res.status(400).json({ error: "Product with this name already exists" });
+        }
 
         if (isNaN(price) || typeof price !== 'number') {
             return res.status(400).json({ error: "Price must be a number" });
@@ -21,7 +27,7 @@ export const createProduct = async (req, res) => {
     }
 };
 
-// Get all products
+// Get all products logic
 export const getAllProducts = async (req, res) => {
     try {
         const products = await Product.find();
@@ -31,7 +37,7 @@ export const getAllProducts = async (req, res) => {
     }
 };
 
-// Get a product by id
+// Get a product by id logic
 export const getProductById = async (req, res) => {
     try {
         const product = await Product.findById(req.params.id);
@@ -46,7 +52,7 @@ export const getProductById = async (req, res) => {
     }
 };
 
-// Update a product by id
+// Update a product by id logic
 export const updateProduct = async (req, res) => {
     try {
         const { name, price, quantity } = req.body;
@@ -67,7 +73,7 @@ export const updateProduct = async (req, res) => {
     }
 };
 
-// Delete a product by id
+// Delete a product by id logic
 export const deleteProduct = async (req, res) => {
     try {
         const deleted = await Product.findByIdAndDelete(req.params.id);
